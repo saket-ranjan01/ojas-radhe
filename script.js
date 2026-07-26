@@ -339,6 +339,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
           .then(res => res.json())
           .then(data => {
+            console.log('API Register Response:', data);
             if (data.status === 'success' || data.status === 'exists') {
               setLoggedInUser(data.user);
               closeModal();
@@ -394,6 +395,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
           .then(res => res.json())
           .then(data => {
+            console.log('API Login Response:', data);
             if (data.status === 'success') {
               setLoggedInUser(data.user);
               closeModal();

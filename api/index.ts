@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 
 // ── Safely init Supabase (won't crash module if env vars are missing) ──
 let supabase: ReturnType<typeof createClient> | null = null;
+let debugInfo = { url: !!process.env.VITE_SUPABASE_URL, key: !!process.env.VITE_SUPABASE_ANON_KEY, error: null };
 try {
   const rawUrl = process.env.VITE_SUPABASE_URL || '';
   const supabaseUrl = rawUrl.replace('/rest/v1/', '').replace(/\/$/, '');
@@ -11,7 +12,8 @@ try {
   if (supabaseUrl && supabaseKey) {
     supabase = createClient(supabaseUrl, supabaseKey);
   }
-} catch (e) {
+} catch (e: any) {
+  debugInfo.error = e.message || String(e);
   console.error('Supabase init error:', e);
 }
 
@@ -28,7 +30,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // If Supabase not configured → tell client to use localStorage fallback
   if (!supabase) {
-    return res.status(200).json({ status: 'error', message: 'Server not configured. Using local storage.' });
+    return res.status(200).json({ status: 'error', message: 'Server not configured. Using local storage.', debugInfo });
   }
 
   const action = req.query.action || req.body?.action;
