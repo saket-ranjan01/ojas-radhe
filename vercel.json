@@ -1,4 +1,8 @@
 {
+  "env": {
+    "VITE_SUPABASE_URL": "https://ctynbfqrfqtkzaezbfyt.supabase.co",
+    "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0eW5iZnFyZnF0a3phZXpiZnl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwMzM3MzksImV4cCI6MjEwMDYwOTczOX0.aYVVM_Rn-dxrM9J2qsRXp0SaBSEq37U6rfmc6urEsrk"
+  },
   "buildCommand": "vite build",
   "outputDirectory": "dist",
   "rewrites": [
