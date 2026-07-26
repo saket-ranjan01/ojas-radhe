@@ -4,9 +4,10 @@ import { createClient } from '@supabase/supabase-js';
 
 // ── Safely init Supabase (won't crash module if env vars are missing) ──
 let supabase: ReturnType<typeof createClient> | null = null;
-let debugInfo = { url: !!process.env.VITE_SUPABASE_URL, key: !!process.env.VITE_SUPABASE_ANON_KEY, error: null };
+let debugInfo: any = { url: !!process.env.VITE_SUPABASE_URL, key: !!process.env.VITE_SUPABASE_ANON_KEY, error: null };
 try {
   let rawUrl = process.env.VITE_SUPABASE_URL || '';
+  debugInfo.rawUrl = rawUrl; // DEBUG WHAT VERCEL HAS
   rawUrl = rawUrl.replace(/^["']|["']$/g, '').trim(); // Remove literal quotes
   const supabaseUrl = rawUrl.replace('/rest/v1/', '').replace(/\/$/, '');
   
