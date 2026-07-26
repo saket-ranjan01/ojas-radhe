@@ -1,0 +1,6 @@
+{
+  "name": "Ojas Yoga & Wellness",
+  "description": "A daily wellness and yoga practice website featuring automatic popup registration, member login, and practice sessions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

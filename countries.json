@@ -1,0 +1,10 @@
+[
+  { "code": "+91", "country": "India", "flag": "🇮🇳", "label": "IN +91" },
+  { "code": "+1", "country": "United States", "flag": "🇺🇸", "label": "US +1" },
+  { "code": "+44", "country": "United Kingdom", "flag": "🇬🇧", "label": "UK +44" },
+  { "code": "+61", "country": "Australia", "flag": "🇦🇺", "label": "AU +61" },
+  { "code": "+971", "country": "UAE", "flag": "🇦🇪", "label": "AE +971" },
+  { "code": "+1", "country": "Canada", "flag": "🇨🇦", "label": "CA +1" },
+  { "code": "+65", "country": "Singapore", "flag": "🇸🇬", "label": "SG +65" },
+  { "code": "+49", "country": "Germany", "flag": "🇩🇪", "label": "DE +49" }
+]
