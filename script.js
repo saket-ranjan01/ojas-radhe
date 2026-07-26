@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+function initApp() {
 
   // ---------- Local Storage Keys (Fallback & Offline Sync) ----------
   const USERS_STORAGE_KEY = 'ojas_registered_users';
@@ -257,11 +257,95 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // ---------- Session Timer Modal ----------
+  let sessionTimerInterval = null;
+
+  function openSessionTimer(sessionName, durationMinutes) {
+    // Create overlay if not exists
+    let overlay = document.getElementById('sessionTimerOverlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'sessionTimerOverlay';
+      overlay.style.cssText = `
+        position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.75);
+        display:flex;align-items:center;justify-content:center;
+        font-family:'Work Sans',sans-serif;
+      `;
+      overlay.innerHTML = `
+        <div style="background:#fff;border-radius:20px;padding:48px 36px;max-width:400px;width:90%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.3);">
+          <div id="stCircle" style="width:140px;height:140px;border-radius:50%;background:#f5f0e8;margin:0 auto 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform 3s ease-in-out;border:3px solid #c8b89a;">
+            <div id="stTime" style="font-size:2rem;font-weight:600;color:#1a1a1a;letter-spacing:-1px;">--:--</div>
+            <div id="stPhase" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;color:#888;margin-top:4px;">remaining</div>
+          </div>
+          <div id="stName" style="font-size:1.2rem;font-weight:600;color:#1a1a1a;margin-bottom:8px;"></div>
+          <div id="stSubtext" style="font-size:0.85rem;color:#888;margin-bottom:32px;">Session in progress...</div>
+          <div style="display:flex;gap:12px;justify-content:center;">
+            <button id="stEndBtn" style="padding:12px 28px;background:#1a1a1a;color:#fff;border:none;border-radius:50px;font-size:0.9rem;cursor:pointer;font-family:inherit;font-weight:500;">End session</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    }
+
+    // Populate
+    const totalSeconds = durationMinutes * 60;
+    let remaining = totalSeconds;
+    document.getElementById('stName').textContent = sessionName;
+    document.getElementById('stSubtext').textContent = `${durationMinutes} min session — stay with it`;
+
+    function formatTime(s) {
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    }
+
+    // Breathing animation on circle
+    const circle = document.getElementById('stCircle');
+    let breathIn = true;
+    function breathe() {
+      if (!document.getElementById('sessionTimerOverlay')) return;
+      circle.style.transform = breathIn ? 'scale(1.12)' : 'scale(1)';
+      document.getElementById('stPhase').textContent = breathIn ? 'breathe in' : 'breathe out';
+      breathIn = !breathIn;
+    }
+    breathe();
+    const breathInterval = setInterval(breathe, 4000);
+
+    document.getElementById('stTime').textContent = formatTime(remaining);
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    clearInterval(sessionTimerInterval);
+    sessionTimerInterval = setInterval(function () {
+      remaining--;
+      document.getElementById('stTime').textContent = formatTime(remaining);
+      if (remaining <= 0) {
+        clearInterval(sessionTimerInterval);
+        clearInterval(breathInterval);
+        document.getElementById('stPhase').textContent = 'complete!';
+        document.getElementById('stSubtext').textContent = '🎉 Great job! Session complete.';
+        document.getElementById('stTime').textContent = '00:00';
+        circle.style.background = '#e8f5e9';
+        circle.style.borderColor = '#81c784';
+      }
+    }, 1000);
+
+    document.getElementById('stEndBtn').onclick = function () {
+      clearInterval(sessionTimerInterval);
+      clearInterval(breathInterval);
+      overlay.style.display = 'none';
+      document.body.style.overflow = '';
+      showToast('Session ended. Great effort! 🙏');
+    };
+  }
+
   document.querySelectorAll('.session-item-cta, .pricing-cta').forEach(btn => {
     btn.addEventListener('click', function () {
       const loggedUser = getLoggedInUser();
       if (loggedUser) {
-        showToast('✨ Starting practice session for ' + loggedUser.name);
+        const sessionName = this.dataset.session || 'Practice Session';
+        const duration = parseInt(this.dataset.duration) || 5;
+        openSessionTimer(sessionName, duration);
       } else {
         openModal('trial');
       }
@@ -437,4 +521,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-});
+} // End of initApp
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
